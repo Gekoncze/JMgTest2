@@ -33,4 +33,16 @@ public class Assert {
 
         throw new AssertException("Expected an exception of type " + type.getSimpleName() + " to be thrown.");
     }
+
+    public static void assertExceptionNotThrown(@Mandatory UnsafeRunnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            throw new AssertException("Unexpected exception of type " + e.getClass().getSimpleName() + " with message: " + e.getMessage());
+        }
+    }
+
+    public interface UnsafeRunnable {
+        void run() throws Exception;
+    }
 }
