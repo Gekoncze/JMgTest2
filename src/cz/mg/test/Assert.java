@@ -3,31 +3,32 @@ package cz.mg.test;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 
+@SuppressWarnings("unchecked")
 public class Assert {
     public static void assertNotNull(@Optional Object object) {
-        if(object == null) {
+        if (object == null) {
             throw new AssertException("Unexpected null value.");
         }
     }
 
     public static void assertEquals(@Optional Object expectation, @Optional Object reality) {
         if(expectation != reality) {
-            if(expectation == null || reality == null) {
+            if (expectation == null || reality == null) {
                 throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
             }
 
-            if(!expectation.equals(reality)) {
+            if (!expectation.equals(reality)) {
                 throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
             }
         }
     }
 
-    public static void assertExceptionThrown(@Mandatory Class<? extends Exception> type, @Mandatory Runnable runnable) {
+    public static <T extends Exception> T assertExceptionThrown(@Mandatory Class<T> type, @Mandatory Runnable runnable) {
         try {
             runnable.run();
         } catch (Exception e) {
-            if(e.getClass().equals(type)) {
-                return;
+            if (e.getClass().equals(type)) {
+                return (T) e;
             }
         }
 
