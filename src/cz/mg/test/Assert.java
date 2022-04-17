@@ -5,14 +5,32 @@ import cz.mg.annotations.requirement.Optional;
 
 @SuppressWarnings("unchecked")
 public class Assert {
+    public static void assertNull(@Optional Object object) {
+        if (object != null) {
+            throw new AssertException("Unexpected nonnull value.");
+        }
+    }
+
     public static void assertNotNull(@Optional Object object) {
         if (object == null) {
             throw new AssertException("Unexpected null value.");
         }
     }
 
+    public static void assertSame(@Optional Object expectation, @Optional Object reality) {
+        if (expectation != reality) {
+            throw new AssertException("Expected " + expectation + " and " + reality + " to be the same object.");
+        }
+    }
+
+    public static void assertNotSame(@Optional Object expectation, @Optional Object reality) {
+        if (expectation == reality) {
+            throw new AssertException("Expected " + expectation + " and " + reality + " to not be the same object.");
+        }
+    }
+
     public static void assertEquals(@Optional Object expectation, @Optional Object reality) {
-        if(expectation != reality) {
+        if (expectation != reality) {
             if (expectation == null || reality == null) {
                 throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
             }
