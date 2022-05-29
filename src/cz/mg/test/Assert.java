@@ -47,6 +47,11 @@ public class Assert {
         } catch (Exception e) {
             if (e.getClass().equals(type)) {
                 return (T) e;
+            } else {
+                throw new AssertException(
+                    "Expected an exception of type " + type.getSimpleName() +
+                        " to be thrown, but got " + e.getClass().getSimpleName() + "."
+                );
             }
         }
 
