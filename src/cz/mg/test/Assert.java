@@ -41,7 +41,10 @@ public class Assert {
         }
     }
 
-    public static <T extends Exception> T assertExceptionThrown(@Mandatory Class<T> type, @Mandatory Runnable runnable) {
+    public static <T extends Exception> T assertExceptionThrown(
+        @Mandatory Class<T> type,
+        @Mandatory Runnable runnable
+    ) {
         try {
             runnable.run();
         } catch (Exception e) {
@@ -50,7 +53,7 @@ public class Assert {
             } else {
                 throw new AssertException(
                     "Expected an exception of type " + type.getSimpleName() +
-                        " to be thrown, but got " + e.getClass().getSimpleName() + "."
+                        " to be thrown, but got " + e.getClass().getSimpleName() + ".", e
                 );
             }
         }
@@ -64,7 +67,9 @@ public class Assert {
         } catch (AssertException e) {
             throw e;
         } catch (Exception e) {
-            throw new AssertException("Unexpected exception of type " + e.getClass().getSimpleName() + " with message: " + e.getMessage());
+            throw new AssertException(
+                "Unexpected exception of type " + e.getClass().getSimpleName() + " with message: " + e.getMessage(), e
+            );
         }
     }
 
