@@ -58,7 +58,9 @@ public class Assert {
             }
         }
 
-        throw new AssertException("Expected an exception of type " + type.getSimpleName() + " to be thrown.");
+        throw new AssertException(
+            "Expected an exception of type " + type.getSimpleName() + " to be thrown, but no exception was thrown."
+        );
     }
 
     public static void assertExceptionNotThrown(@Mandatory UnsafeRunnable runnable) {
