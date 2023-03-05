@@ -35,10 +35,40 @@ public class Assert {
                 throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
             }
 
-            if (!expectation.equals(reality)) {
-                throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
+            if (expectation instanceof Number && reality instanceof Number) {
+                assertEqualsNumerically((Number) expectation, (Number) reality);
+            } else {
+                if (!expectation.equals(reality)) {
+                    throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
+                }
             }
         }
+    }
+
+    private static void assertEqualsNumerically(Number expectation, Number reality) {
+        long expectationLong = convert(expectation);
+        long realityLong = convert(reality);
+        if (expectationLong != realityLong) {
+            throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
+        }
+    }
+
+    private static long convert(Number number) {
+        if (number instanceof Long) {
+            return (long) number;
+        }
+
+        if (number instanceof Integer) {
+            return (int) number;
+        }
+
+        if (number instanceof Short) {
+            return (short) number;
+        }
+
+        throw new UnsupportedOperationException(
+            "Unsupported number type for comparison: " + number.getClass().getSimpleName() + "."
+        );
     }
 
     public static <T extends Exception> T assertExceptionThrown(
