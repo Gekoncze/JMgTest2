@@ -104,8 +104,4 @@ public class Assert {
             );
         }
     }
-
-    public interface UnsafeRunnable {
-        void run() throws Exception;
-    }
 }
