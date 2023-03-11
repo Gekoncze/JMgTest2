@@ -48,7 +48,7 @@ public class Assert {
         }
     }
 
-    private static void assertEqualsNumerically(Number expectation, Number reality) {
+    private static void assertEqualsNumerically(@Mandatory Number expectation, @Mandatory Number reality) {
         long expectationLong = convert(expectation);
         long realityLong = convert(reality);
         if (expectationLong != realityLong) {
@@ -56,7 +56,7 @@ public class Assert {
         }
     }
 
-    private static long convert(Number number) {
+    private static long convert(@Mandatory Number number) {
         if (number instanceof Long) {
             return (long) number;
         }
@@ -74,6 +74,10 @@ public class Assert {
         );
     }
 
+    public static void assertExceptionThrown(@Mandatory Runnable runnable) {
+        assertExceptionThrown(Exception.class, runnable);
+    }
+
     public static <T extends Exception> T assertExceptionThrown(
         @Mandatory Class<T> type,
         @Mandatory Runnable runnable
@@ -81,7 +85,7 @@ public class Assert {
         try {
             runnable.run();
         } catch (Exception e) {
-            if (e.getClass().equals(type)) {
+            if (type.isAssignableFrom(e.getClass())) {
                 return (T) e;
             } else {
                 throw new AssertException(
