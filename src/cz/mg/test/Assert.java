@@ -48,6 +48,30 @@ public class Assert {
         }
     }
 
+    public static <T> void assertEquals(
+        @Optional T expectation,
+        @Optional T reality,
+        @Mandatory CompareFunction<T> compareFunction,
+        @Mandatory ToStringFunction<T> stringFunction
+    ) {
+        if (expectation != reality) {
+            if (expectation == null) {
+                throw new AssertException("Expected null, but got " + stringFunction.toString(reality) + ".");
+            }
+
+            if (reality == null) {
+                throw new AssertException("Expected " + stringFunction.toString(expectation) + ", but got null.");
+            }
+
+            if (!compareFunction.equals(expectation, reality)) {
+                throw new AssertException(
+                    "Expected " + stringFunction.toString(expectation) +
+                        ", but got " + stringFunction.toString(reality) + "."
+                );
+            }
+        }
+    }
+
     private static void assertEqualsNumerically(@Mandatory Number expectation, @Mandatory Number reality) {
         long expectationLong = convert(expectation);
         long realityLong = convert(reality);
