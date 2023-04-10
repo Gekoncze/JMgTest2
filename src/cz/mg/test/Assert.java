@@ -1,8 +1,9 @@
 package cz.mg.test;
 
-import cz.mg.annotations.classes.Utility;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.test.functions.CompareFunction;
+import cz.mg.test.functions.PrintFunction;
 
 import java.util.Iterator;
 
@@ -52,7 +53,7 @@ public class Assert {
         @Optional T expectation,
         @Optional T reality,
         @Mandatory CompareFunction<T> compareFunction,
-        @Mandatory ToStringFunction<T> stringFunction
+        @Mandatory PrintFunction<T> stringFunction
     ) {
         if (expectation != reality) {
             if (expectation == null) {
@@ -140,7 +141,7 @@ public class Assert {
         @Optional Iterable<T> expectation,
         @Optional Iterable<T> reality,
         @Mandatory CompareFunction<T> compareFunction,
-        @Mandatory ToStringFunction<T> toStringFunction
+        @Mandatory PrintFunction<T> PrintFunction
     ) {
         if (expectation == reality) {
             return;
@@ -175,20 +176,20 @@ public class Assert {
 
             if (expectedItem == null) {
                 throw new AssertException(
-                    "Expected item at " + i + " to be null, but was " + toStringFunction.toString(actualItem) + "."
+                    "Expected item at " + i + " to be null, but was " + PrintFunction.toString(actualItem) + "."
                 );
             }
 
             if (actualItem == null) {
                 throw new AssertException(
-                    "Expected item at " + i + " to be " + toStringFunction.toString(expectedItem) + ", but was null."
+                    "Expected item at " + i + " to be " + PrintFunction.toString(expectedItem) + ", but was null."
                 );
             }
 
             if (!compareFunction.equals(expectedItem, actualItem)) {
                 throw new AssertException(
-                    "Expected item at " + i + " to be " + toStringFunction.toString(expectedItem) + ", " +
-                        "but was " + toStringFunction.toString(actualItem) + "."
+                    "Expected item at " + i + " to be " + PrintFunction.toString(expectedItem) + ", " +
+                        "but was " + PrintFunction.toString(actualItem) + "."
                 );
             }
         }
@@ -200,13 +201,5 @@ public class Assert {
             count++;
         }
         return count;
-    }
-
-    public @Utility interface CompareFunction<T> {
-        boolean equals(@Mandatory T a, @Mandatory T b);
-    }
-
-    public @Utility interface ToStringFunction<T> {
-        String toString(@Mandatory T a);
     }
 }
