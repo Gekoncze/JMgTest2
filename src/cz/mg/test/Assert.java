@@ -1,26 +1,33 @@
 package cz.mg.test;
 
+import cz.mg.annotations.classes.Static;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.test.builders.BinaryObjectAssertion;
 import cz.mg.test.builders.CodeAssertion;
+import cz.mg.test.builders.CollectionAssertion;
 import cz.mg.test.builders.UnaryObjectAssertion;
 import cz.mg.test.functions.CompareFunction;
 import cz.mg.test.functions.PrintFunction;
 
-import java.util.Iterator;
-
-public class Assert {
-    public static @Mandatory <T> UnaryObjectAssertion<T> assertThat(T object) {
+public @Static class Assert {
+    public static @Mandatory <T> UnaryObjectAssertion<T> assertThat(@Optional T object) {
         return new UnaryObjectAssertion<>(object);
     }
 
-    public static @Mandatory <T> BinaryObjectAssertion<T> assertThat(T expectation, T reality) {
+    public static @Mandatory <T> BinaryObjectAssertion<T> assertThat(@Optional T expectation, @Optional T reality) {
         return new BinaryObjectAssertion<>(expectation, reality);
     }
 
     public static @Mandatory CodeAssertion assertThatCode(@Mandatory UnsafeRunnable runnable) {
         return new CodeAssertion(runnable);
+    }
+
+    public static @Mandatory <T> CollectionAssertion<T> assertThatCollection(
+        @Optional Iterable<T> expectation,
+        @Optional Iterable<T> reality
+    ) {
+        return new CollectionAssertion<>(expectation, reality);
     }
 
     @Deprecated
@@ -79,69 +86,16 @@ public class Assert {
         assertThatCode(runnable).doesNotThrowAnyException();
     }
 
+    @Deprecated
     public static <T> void assertEquals(
         @Optional Iterable<T> expectation,
         @Optional Iterable<T> reality,
         @Mandatory CompareFunction<T> compareFunction,
-        @Mandatory PrintFunction<T> PrintFunction
+        @Mandatory PrintFunction<T> printFunction
     ) {
-        if (expectation == reality) {
-            return;
-        }
-
-        if (expectation == null) {
-            throw new AssertException("Expected list to be null, but was not null.");
-        }
-
-        if (reality == null) {
-            throw new AssertException("Expected list to not be null, but was null.");
-        }
-
-        int expectedCount = count(expectation);
-        int actualCount = count(reality);
-
-        if (expectedCount != actualCount) {
-            throw new AssertException("Expected list count to be " + expectedCount + ", but was " + actualCount + ".");
-        }
-
-        int i = -1;
-        Iterator<T> expectationIterator = expectation.iterator();
-        Iterator<T> realityIterator = reality.iterator();
-        while (expectationIterator.hasNext() && realityIterator.hasNext()) {
-            i++;
-            @Optional T expectedItem = expectationIterator.next();
-            @Optional T actualItem = realityIterator.next();
-
-            if (expectedItem == actualItem) {
-                continue;
-            }
-
-            if (expectedItem == null) {
-                throw new AssertException(
-                    "Expected item at " + i + " to be null, but was " + PrintFunction.toString(actualItem) + "."
-                );
-            }
-
-            if (actualItem == null) {
-                throw new AssertException(
-                    "Expected item at " + i + " to be " + PrintFunction.toString(expectedItem) + ", but was null."
-                );
-            }
-
-            if (!compareFunction.equals(expectedItem, actualItem)) {
-                throw new AssertException(
-                    "Expected item at " + i + " to be " + PrintFunction.toString(expectedItem) + ", " +
-                        "but was " + PrintFunction.toString(actualItem) + "."
-                );
-            }
-        }
-    }
-
-    private static <T> int count(Iterable<T> iterable) {
-        int count = 0;
-        for (T ignored : iterable) {
-            count++;
-        }
-        return count;
+        assertThatCollection(expectation, reality)
+            .withCompareFunction(compareFunction)
+            .withPrintFunction(printFunction)
+            .areEqual();
     }
 }
