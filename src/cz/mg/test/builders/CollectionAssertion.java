@@ -55,11 +55,11 @@ public @Utility class CollectionAssertion<T> {
         }
 
         if (expectation == null) {
-            throw new AssertException(extendMessage("Expected list to be null, but was not null.", message));
+            throw new AssertException(extendMessage("Expected collection to be null, but was not null.", message));
         }
 
         if (reality == null) {
-            throw new AssertException(extendMessage("Expected list to not be null, but was null.", message));
+            throw new AssertException(extendMessage("Expected collection to not be null, but was null.", message));
         }
 
         int expectedCount = count(expectation);
@@ -67,7 +67,7 @@ public @Utility class CollectionAssertion<T> {
 
         if (expectedCount != actualCount) {
             throw new AssertException(extendMessage(
-                "Expected list count to be " + expectedCount + ", but was " + actualCount + ".",
+                "Expected collection count to be " + expectedCount + ", but was " + actualCount + ".",
                 message
             ));
         }
