@@ -64,9 +64,10 @@ public @Utility class CodeAssertion {
             }
         }
 
-        throw new AssertException(
-            "Expected an exception of type " + type.getSimpleName() + " to be thrown, but no exception was thrown."
-        );
+        throw new AssertException(extendMessage(
+            "Expected an exception of type " + type.getSimpleName() + " to be thrown, but no exception was thrown.",
+            message
+        ));
     }
 
     private static @Mandatory String extendMessage(@Mandatory String mandatoryPart, @Optional String optionalPart) {
