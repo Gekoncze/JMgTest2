@@ -2,6 +2,8 @@ package cz.mg.test;
 
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.test.builders.BinaryObjectAssertion;
+import cz.mg.test.builders.UnaryObjectAssertion;
 import cz.mg.test.functions.CompareFunction;
 import cz.mg.test.functions.PrintFunction;
 
@@ -9,94 +11,50 @@ import java.util.Iterator;
 
 @SuppressWarnings("unchecked")
 public class Assert {
+    private static <T> UnaryObjectAssertion<T> assertThat(T object) {
+        return new UnaryObjectAssertion<>(object);
+    }
+
+    private static <T> BinaryObjectAssertion<T> assertThat(T expectation, T reality) {
+        return new BinaryObjectAssertion<>(expectation, reality);
+    }
+
+    @Deprecated
     public static void assertNull(@Optional Object object) {
-        if (object != null) {
-            throw new AssertException("Unexpected nonnull value.");
-        }
+        assertThat(object).isNull();
     }
 
+    @Deprecated
     public static void assertNotNull(@Optional Object object) {
-        if (object == null) {
-            throw new AssertException("Unexpected null value.");
-        }
+        assertThat(object).isNotNull();
     }
 
+    @Deprecated
     public static void assertSame(@Optional Object expectation, @Optional Object reality) {
-        if (expectation != reality) {
-            throw new AssertException("Expected " + expectation + " and " + reality + " to be the same object.");
-        }
+        assertThat(expectation, reality).areSame();
     }
 
+    @Deprecated
     public static void assertNotSame(@Optional Object expectation, @Optional Object reality) {
-        if (expectation == reality) {
-            throw new AssertException("Expected " + expectation + " and " + reality + " to not be the same object.");
-        }
+        assertThat(expectation, reality).areNotSame();
     }
 
+    @Deprecated
     public static void assertEquals(@Optional Object expectation, @Optional Object reality) {
-        if (expectation != reality) {
-            if (expectation == null || reality == null) {
-                throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
-            }
-
-            if (expectation instanceof Number && reality instanceof Number) {
-                assertEqualsNumerically((Number) expectation, (Number) reality);
-            } else {
-                if (!expectation.equals(reality)) {
-                    throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
-                }
-            }
-        }
+        assertThat(expectation, reality).areEqual();
     }
 
+    @Deprecated
     public static <T> void assertEquals(
         @Optional T expectation,
         @Optional T reality,
         @Mandatory CompareFunction<T> compareFunction,
-        @Mandatory PrintFunction<T> stringFunction
+        @Mandatory PrintFunction<T> printFunction
     ) {
-        if (expectation != reality) {
-            if (expectation == null) {
-                throw new AssertException("Expected null, but got " + stringFunction.toString(reality) + ".");
-            }
-
-            if (reality == null) {
-                throw new AssertException("Expected " + stringFunction.toString(expectation) + ", but got null.");
-            }
-
-            if (!compareFunction.equals(expectation, reality)) {
-                throw new AssertException(
-                    "Expected " + stringFunction.toString(expectation) +
-                        ", but got " + stringFunction.toString(reality) + "."
-                );
-            }
-        }
-    }
-
-    private static void assertEqualsNumerically(@Mandatory Number expectation, @Mandatory Number reality) {
-        long expectationLong = convert(expectation);
-        long realityLong = convert(reality);
-        if (expectationLong != realityLong) {
-            throw new AssertException("Expected " + expectation + ", but got " + reality + ".");
-        }
-    }
-
-    private static long convert(@Mandatory Number number) {
-        if (number instanceof Long) {
-            return (long) number;
-        }
-
-        if (number instanceof Integer) {
-            return (int) number;
-        }
-
-        if (number instanceof Short) {
-            return (short) number;
-        }
-
-        throw new UnsupportedOperationException(
-            "Unsupported number type for comparison: " + number.getClass().getSimpleName() + "."
-        );
+        assertThat(expectation, reality)
+            .withCompareFunction(compareFunction)
+            .withPrintFunction(printFunction)
+            .areEqual();
     }
 
     public static void assertExceptionThrown(@Mandatory Runnable runnable) {
