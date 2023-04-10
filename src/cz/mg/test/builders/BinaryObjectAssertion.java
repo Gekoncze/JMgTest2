@@ -83,14 +83,18 @@ public @Utility class BinaryObjectAssertion<T> {
             }
 
             if (reality == null) {
-                throw new AssertException("Expected " + printFunction.toString(expectation) + ", but got null.");
+                throw new AssertException(extendMessage(
+                    "Expected " + printFunction.toString(expectation) + ", but got null.",
+                    message
+                ));
             }
 
             if (!compareFunction.equals(expectation, reality)) {
-                throw new AssertException(
+                throw new AssertException(extendMessage(
                     "Expected " + printFunction.toString(expectation) +
-                        ", but got " + printFunction.toString(reality) + "."
-                );
+                        ", but got " + printFunction.toString(reality) + ".",
+                    message
+                ));
             }
         }
     }
@@ -111,10 +115,11 @@ public @Utility class BinaryObjectAssertion<T> {
             }
 
             if (compareFunction.equals(wrong, reality)) {
-                throw new AssertException(
+                throw new AssertException(extendMessage(
                     "Did not expect " + printFunction.toString(wrong) +
-                        ", but got " + printFunction.toString(reality) + "."
-                );
+                        ", but got " + printFunction.toString(reality) + ".",
+                    message
+                ));
             }
         }
     }
