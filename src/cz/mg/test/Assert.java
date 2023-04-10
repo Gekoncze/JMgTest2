@@ -3,20 +3,24 @@ package cz.mg.test;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.test.builders.BinaryObjectAssertion;
+import cz.mg.test.builders.CodeAssertion;
 import cz.mg.test.builders.UnaryObjectAssertion;
 import cz.mg.test.functions.CompareFunction;
 import cz.mg.test.functions.PrintFunction;
 
 import java.util.Iterator;
 
-@SuppressWarnings("unchecked")
 public class Assert {
-    private static <T> UnaryObjectAssertion<T> assertThat(T object) {
+    public static @Mandatory <T> UnaryObjectAssertion<T> assertThat(T object) {
         return new UnaryObjectAssertion<>(object);
     }
 
-    private static <T> BinaryObjectAssertion<T> assertThat(T expectation, T reality) {
+    public static @Mandatory <T> BinaryObjectAssertion<T> assertThat(T expectation, T reality) {
         return new BinaryObjectAssertion<>(expectation, reality);
+    }
+
+    public static @Mandatory CodeAssertion assertThatCode(@Mandatory UnsafeRunnable runnable) {
+        return new CodeAssertion(runnable);
     }
 
     @Deprecated
@@ -57,42 +61,22 @@ public class Assert {
             .areEqual();
     }
 
-    public static void assertExceptionThrown(@Mandatory Runnable runnable) {
-        assertExceptionThrown(Exception.class, runnable);
+    @Deprecated
+    public static void assertExceptionThrown(@Mandatory UnsafeRunnable runnable) {
+        assertThatCode(runnable).throwsException();
     }
 
-    public static <T extends Exception> T assertExceptionThrown(
-        @Mandatory Class<T> type,
-        @Mandatory Runnable runnable
+    @Deprecated
+    public static <E extends Exception> E assertExceptionThrown(
+        @Mandatory Class<E> type,
+        @Mandatory UnsafeRunnable runnable
     ) {
-        try {
-            runnable.run();
-        } catch (Exception e) {
-            if (type.isAssignableFrom(e.getClass())) {
-                return (T) e;
-            } else {
-                throw new AssertException(
-                    "Expected an exception of type " + type.getSimpleName() +
-                        " to be thrown, but got " + e.getClass().getSimpleName() + ".", e
-                );
-            }
-        }
-
-        throw new AssertException(
-            "Expected an exception of type " + type.getSimpleName() + " to be thrown, but no exception was thrown."
-        );
+        return assertThatCode(runnable).throwsException(type);
     }
 
+    @Deprecated
     public static void assertExceptionNotThrown(@Mandatory UnsafeRunnable runnable) {
-        try {
-            runnable.run();
-        } catch (AssertException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new AssertException(
-                "Unexpected exception of type " + e.getClass().getSimpleName() + " with message: " + e.getMessage(), e
-            );
-        }
+        assertThatCode(runnable).doesNotThrowAnyException();
     }
 
     public static <T> void assertEquals(
