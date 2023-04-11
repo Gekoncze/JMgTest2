@@ -11,30 +11,29 @@ import cz.mg.test.functions.common.DefaultCompareFunction;
 import java.util.Iterator;
 import java.util.Objects;
 
-public @Utility class CollectionAssertion<T> {
+public @Utility class BinaryCollectionAssertion<T> {
     private final @Optional Iterable<T> expectation;
     private final @Optional Iterable<T> reality;
     private @Mandatory CompareFunction<T> compareFunction = new DefaultCompareFunction<>();
     private @Mandatory PrintFunction<T> printFunction = Objects::toString;
     private @Optional String message;
 
-    public CollectionAssertion(@Optional Iterable<T> expectation, @Optional Iterable<T> reality) {
+    public BinaryCollectionAssertion(@Optional Iterable<T> expectation, @Optional Iterable<T> reality) {
         this.expectation = expectation;
         this.reality = reality;
     }
 
-
-    public CollectionAssertion<T> withCompareFunction(@Mandatory CompareFunction<T> compareFunction) {
+    public BinaryCollectionAssertion<T> withCompareFunction(@Mandatory CompareFunction<T> compareFunction) {
         this.compareFunction = compareFunction;
         return this;
     }
 
-    public CollectionAssertion<T> withPrintFunction(@Mandatory PrintFunction<T> printFunction) {
+    public BinaryCollectionAssertion<T> withPrintFunction(@Mandatory PrintFunction<T> printFunction) {
         this.printFunction = printFunction;
         return this;
     }
 
-    public CollectionAssertion<T> withMessage(@Mandatory String message) {
+    public BinaryCollectionAssertion<T> withMessage(@Mandatory String message) {
         this.message = message;
         return this;
     }

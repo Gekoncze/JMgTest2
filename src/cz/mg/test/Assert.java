@@ -5,16 +5,11 @@ import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.test.builders.BinaryObjectAssertion;
 import cz.mg.test.builders.CodeAssertion;
-import cz.mg.test.builders.CollectionAssertion;
-import cz.mg.test.builders.UnaryObjectAssertion;
+import cz.mg.test.builders.BinaryCollectionAssertion;
 import cz.mg.test.functions.CompareFunction;
 import cz.mg.test.functions.PrintFunction;
 
 public @Static class Assert {
-    public static @Mandatory <T> UnaryObjectAssertion<T> assertThat(@Optional T object) {
-        return new UnaryObjectAssertion<>(object);
-    }
-
     public static @Mandatory <T> BinaryObjectAssertion<T> assertThat(@Optional T expectation, @Optional T reality) {
         return new BinaryObjectAssertion<>(expectation, reality);
     }
@@ -23,21 +18,23 @@ public @Static class Assert {
         return new CodeAssertion(runnable);
     }
 
-    public static @Mandatory <T> CollectionAssertion<T> assertThatCollection(
+    public static @Mandatory <T> BinaryCollectionAssertion<T> assertThatCollection(
         @Optional Iterable<T> expectation,
         @Optional Iterable<T> reality
     ) {
-        return new CollectionAssertion<>(expectation, reality);
+        return new BinaryCollectionAssertion<>(expectation, reality);
     }
 
-    @Deprecated
     public static void assertNull(@Optional Object object) {
-        assertThat(object).isNull();
+        if (object != null) {
+            throw new AssertException("Expected null, but got " + object + ".");
+        }
     }
 
-    @Deprecated
     public static void assertNotNull(@Optional Object object) {
-        assertThat(object).isNotNull();
+        if (object == null) {
+            throw new AssertException("Unexpected null value.");
+        }
     }
 
     @Deprecated
