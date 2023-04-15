@@ -16,7 +16,7 @@ public @Static class Assert {
         return new CodeAssertion(runnable);
     }
 
-    public static @Mandatory <T> BinaryCollectionAssertion<T> assertThatCollection(
+    public static @Mandatory <T> BinaryCollectionAssertion<T> assertThatCollections(
         @Optional Iterable<T> expectation,
         @Optional Iterable<T> reality
     ) {
