@@ -17,6 +17,10 @@ public @Utility class BinaryCollectionAssertion<T> {
     private @Mandatory CompareFunction<T> compareFunction = new DefaultCompareFunction<>();
     private @Mandatory PrintFunction<T> printFunction = Objects::toString;
     private @Optional String message;
+    private @Optional Boolean verbose;
+    private @Optional String verboseBegin;
+    private @Optional String verboseDelimiter;
+    private @Optional String verboseEnd;
 
     public BinaryCollectionAssertion(@Optional Iterable<T> expectation, @Optional Iterable<T> reality) {
         this.expectation = expectation;
@@ -38,8 +42,62 @@ public @Utility class BinaryCollectionAssertion<T> {
         return this;
     }
 
+    public BinaryCollectionAssertion<T> verbose(
+        @Mandatory String begin,
+        @Mandatory String delimiter,
+        @Mandatory String end
+    ) {
+        this.verbose = true;
+        this.verboseBegin = begin;
+        this.verboseDelimiter = delimiter;
+        this.verboseEnd = end;
+        return this;
+    }
+
     public void areEqual() {
-        assertEquals(expectation, reality, compareFunction, printFunction, message);
+        assertEquals(expectation, reality, compareFunction, printFunction, this::buildMessage);
+    }
+
+    private @Mandatory String buildMessage(@Mandatory String error) {
+        String message = this.message == null ? error : error + " " + this.message;
+        if (Boolean.TRUE.equals(verbose)) {
+            String expectationEntriesMessage = "";
+            if (expectation != null) {
+                expectationEntriesMessage = "\nExpectation: " + buildEntriesMessage(expectation);
+            }
+
+            String realityEntriesMessage = "";
+            if (reality != null) {
+                realityEntriesMessage = "\nReality: " + buildEntriesMessage(reality);
+            }
+
+            return message + expectationEntriesMessage + realityEntriesMessage;
+        } else {
+            return message;
+        }
+    }
+
+    private @Mandatory String buildEntriesMessage(@Mandatory Iterable<T> collection) {
+        StringBuilder builder = new StringBuilder();
+
+        boolean first = true;
+        for (T element : collection) {
+            if (first) {
+                first = false;
+            } else {
+                builder.append(verboseDelimiter);
+            }
+
+            if (element != null) {
+                builder.append(verboseBegin);
+                builder.append(printFunction.toString(element));
+                builder.append(verboseEnd);
+            } else {
+                builder.append("null");
+            }
+        }
+
+        return builder.toString();
     }
 
     private static <T> void assertEquals(
@@ -47,27 +105,26 @@ public @Utility class BinaryCollectionAssertion<T> {
         @Optional Iterable<T> reality,
         @Mandatory CompareFunction<T> compareFunction,
         @Mandatory PrintFunction<T> printFunction,
-        @Optional String message
+        @Mandatory MessageBuilder messageBuilder
     ) {
         if (expectation == reality) {
             return;
         }
 
         if (expectation == null) {
-            throw new AssertException(extendMessage("Expected collection to be null, but was not null.", message));
+            throw new AssertException(messageBuilder.build("Expected collection to be null, but was not null."));
         }
 
         if (reality == null) {
-            throw new AssertException(extendMessage("Expected collection to not be null, but was null.", message));
+            throw new AssertException(messageBuilder.build("Expected collection to not be null, but was null."));
         }
 
         int expectedCount = count(expectation);
         int actualCount = count(reality);
 
         if (expectedCount != actualCount) {
-            throw new AssertException(extendMessage(
-                "Expected collection count to be " + expectedCount + ", but was " + actualCount + ".",
-                message
+            throw new AssertException(messageBuilder.build(
+                "Expected collection count to be " + expectedCount + ", but was " + actualCount + "."
             ));
         }
 
@@ -84,24 +141,22 @@ public @Utility class BinaryCollectionAssertion<T> {
             }
 
             if (expectedItem == null) {
-                throw new AssertException(extendMessage(
-                    "Expected item at " + i + " to be null, but was " + printFunction.toString(actualItem) + ".",
-                    message
+                throw new AssertException(messageBuilder.build(
+                    "Expected item at " + i + " to be null, but was " + printFunction.toString(actualItem) + "."
                 ));
             }
 
             if (actualItem == null) {
-                throw new AssertException(extendMessage(
-                    "Expected item at " + i + " to be " + printFunction.toString(expectedItem) + ", but was null.",
-                    message
+                throw new AssertException(messageBuilder.build(
+                    "Expected item at " + i + " to be " + printFunction.toString(expectedItem) + ", but was null."
                 ));
             }
 
             if (!compareFunction.equals(expectedItem, actualItem)) {
-                throw new AssertException(
+                throw new AssertException(messageBuilder.build(
                     "Expected item at " + i + " to be " + printFunction.toString(expectedItem) + ", " +
                         "but was " + printFunction.toString(actualItem) + "."
-                );
+                ));
             }
         }
     }
@@ -114,11 +169,7 @@ public @Utility class BinaryCollectionAssertion<T> {
         return count;
     }
 
-    private static @Mandatory String extendMessage(@Mandatory String mandatoryPart, @Optional String optionalPart) {
-        if (optionalPart == null) {
-            return mandatoryPart;
-        } else {
-            return mandatoryPart + " " + optionalPart;
-        }
+    private interface MessageBuilder {
+        @Mandatory String build(@Mandatory String error);
     }
 }
