@@ -1,8 +1,9 @@
-package cz.mg.test;
+package cz.mg.test.exceptions;
 
+import cz.mg.annotations.classes.Error;
 import cz.mg.annotations.requirement.Mandatory;
 
-public class AssertException extends RuntimeException {
+public @Error class AssertException extends RuntimeException {
     public AssertException(@Mandatory String message) {
         super(message);
     }

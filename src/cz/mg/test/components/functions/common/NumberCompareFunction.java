@@ -1,12 +1,12 @@
-package cz.mg.test.functions.common;
+package cz.mg.test.components.functions.common;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.test.functions.CompareFunction;
+import cz.mg.test.components.functions.CompareFunction;
 
 import java.util.Objects;
 
-public @Utility class NumberCompareFunction implements CompareFunction<Number> {
+public @Component class NumberCompareFunction implements CompareFunction<Number> {
     @Override
     public boolean equals(@Mandatory Number a, @Mandatory Number b) {
         if (areIntegers(a, b)) {

@@ -1,12 +1,12 @@
-package cz.mg.test.builders;
+package cz.mg.test.components.builders;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
-import cz.mg.test.AssertException;
-import cz.mg.test.UnsafeRunnable;
+import cz.mg.test.exceptions.AssertException;
+import cz.mg.test.components.UnsafeRunnable;
 
-public @Utility class CodeAssertion {
+public @Component class CodeAssertion {
     private final @Mandatory UnsafeRunnable runnable;
     private @Optional String message;
 

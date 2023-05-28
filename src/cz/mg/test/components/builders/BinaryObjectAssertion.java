@@ -1,16 +1,16 @@
-package cz.mg.test.builders;
+package cz.mg.test.components.builders;
 
-import cz.mg.annotations.classes.Utility;
+import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
-import cz.mg.test.AssertException;
-import cz.mg.test.functions.CompareFunction;
-import cz.mg.test.functions.PrintFunction;
-import cz.mg.test.functions.common.DefaultCompareFunction;
+import cz.mg.test.exceptions.AssertException;
+import cz.mg.test.components.functions.CompareFunction;
+import cz.mg.test.components.functions.PrintFunction;
+import cz.mg.test.components.functions.common.DefaultCompareFunction;
 
 import java.util.Objects;
 
-public @Utility class BinaryObjectAssertion<T> {
+public @Component class BinaryObjectAssertion<T> {
     private final @Optional T expectation;
     private final @Optional T reality;
     private @Mandatory CompareFunction<T> compareFunction = new DefaultCompareFunction<>();
