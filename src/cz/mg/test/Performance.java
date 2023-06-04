@@ -9,4 +9,12 @@ public @Static class Performance {
         service.run();
         return System.currentTimeMillis() - start;
     }
+
+    public static long measure(@Mandatory Runnable runnable, int iterations) {
+        long total = 0L;
+        for (int i = 0; i < iterations; i++) {
+            total += measure(runnable);
+        }
+        return total / iterations;
+    }
 }
