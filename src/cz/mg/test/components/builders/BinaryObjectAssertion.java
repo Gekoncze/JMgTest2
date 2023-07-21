@@ -106,21 +106,23 @@ public @Component class BinaryObjectAssertion<T> {
         @Mandatory PrintFunction<T> printFunction,
         @Optional String message
     ) {
-        if (reality == wrong) {
-            if (reality == null) {
-                throw new AssertException(extendMessage(
-                    "Unexpected null value.",
-                    message
-                ));
-            }
+        if (reality == null && wrong == null) {
+            throw new AssertException(extendMessage(
+                "Unexpected null value.",
+                message
+            ));
+        }
 
-            if (compareFunction.equals(wrong, reality)) {
-                throw new AssertException(extendMessage(
-                    "Did not expect " + printFunction.toString(wrong) +
-                        ", but got " + printFunction.toString(reality) + ".",
-                    message
-                ));
-            }
+        if (reality == null || wrong == null) {
+            return;
+        }
+
+        if (compareFunction.equals(wrong, reality)) {
+            throw new AssertException(extendMessage(
+                "Did not expect " + printFunction.toString(wrong) +
+                    ", but got " + printFunction.toString(reality) + ".",
+                message
+            ));
         }
     }
 
