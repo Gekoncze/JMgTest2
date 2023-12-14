@@ -42,6 +42,14 @@ public @Component class BinaryCollectionAssertion<T> {
         return this;
     }
 
+    public BinaryCollectionAssertion<T> verbose(@Mandatory String delimiter) {
+        this.verbose = true;
+        this.verboseBegin = "";
+        this.verboseDelimiter = delimiter;
+        this.verboseEnd = "";
+        return this;
+    }
+
     public BinaryCollectionAssertion<T> verbose(
         @Mandatory String begin,
         @Mandatory String delimiter,
