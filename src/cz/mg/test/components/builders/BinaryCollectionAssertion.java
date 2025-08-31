@@ -129,12 +129,9 @@ public @Component class BinaryCollectionAssertion<T> {
 
         int expectedCount = count(expectation);
         int actualCount = count(reality);
-
-        if (expectedCount != actualCount) {
-            throw new AssertException(messageBuilder.build(
-                "Expected collection count to be " + expectedCount + ", but was " + actualCount + "."
-            ));
-        }
+        String countMismatch = expectedCount != actualCount
+            ? "Expected collection count to be " + expectedCount + ", but was " + actualCount + "."
+            : null;
 
         int i = -1;
         Iterator<T> expectationIterator = expectation.iterator();
@@ -150,23 +147,34 @@ public @Component class BinaryCollectionAssertion<T> {
 
             if (expectedItem == null) {
                 throw new AssertException(messageBuilder.build(
+                    getCountMessage(countMismatch) +
                     "Expected item at " + i + " to be null, but was " + printFunction.toString(actualItem) + "."
                 ));
             }
 
             if (actualItem == null) {
                 throw new AssertException(messageBuilder.build(
+                    getCountMessage(countMismatch) +
                     "Expected item at " + i + " to be " + printFunction.toString(expectedItem) + ", but was null."
                 ));
             }
 
             if (!compareFunction.equals(expectedItem, actualItem)) {
                 throw new AssertException(messageBuilder.build(
+                    getCountMessage(countMismatch) +
                     "Expected item at " + i + " to be " + printFunction.toString(expectedItem) + ", " +
                         "but was " + printFunction.toString(actualItem) + "."
                 ));
             }
         }
+
+        if (countMismatch != null) {
+            throw new AssertException(messageBuilder.build(countMismatch));
+        }
+    }
+
+    private static @Mandatory String getCountMessage(@Optional String message) {
+        return message == null ? "" : message + "\n";
     }
 
     private static <T> int count(Iterable<T> iterable) {
