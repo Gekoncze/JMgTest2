@@ -3,18 +3,17 @@ package cz.mg.test.components.builders;
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.functions.FormatFunction;
+import cz.mg.functions.FormatFunctions;
 import cz.mg.test.exceptions.AssertException;
 import cz.mg.test.components.functions.CompareFunction;
-import cz.mg.test.components.functions.PrintFunction;
 import cz.mg.test.components.functions.common.DefaultCompareFunction;
-
-import java.util.Objects;
 
 public @Component class BinaryObjectAssertion<T> {
     private final @Optional T expectation;
     private final @Optional T reality;
     private @Mandatory CompareFunction<T> compareFunction = new DefaultCompareFunction<>();
-    private @Mandatory PrintFunction<T> printFunction = Objects::toString;
+    private @Mandatory FormatFunction<T> formatFunction = FormatFunctions.TO_STRING();
     private @Optional String message;
 
     public BinaryObjectAssertion(@Optional T expectation, @Optional T reality) {
@@ -27,8 +26,8 @@ public @Component class BinaryObjectAssertion<T> {
         return this;
     }
 
-    public BinaryObjectAssertion<T> withPrintFunction(@Mandatory PrintFunction<T> printFunction) {
-        this.printFunction = printFunction;
+    public BinaryObjectAssertion<T> withPrintFunction(@Mandatory FormatFunction<T> formatFunction) {
+        this.formatFunction = formatFunction;
         return this;
     }
 
@@ -38,18 +37,18 @@ public @Component class BinaryObjectAssertion<T> {
     }
 
     public void areEqual() {
-        assertEquals(expectation, reality, compareFunction, printFunction, message);
+        assertEquals(expectation, reality, compareFunction, formatFunction, message);
     }
 
     public void areNotEqual() {
-        assertNotEquals(expectation, reality, compareFunction, printFunction, message);
+        assertNotEquals(expectation, reality, compareFunction, formatFunction, message);
     }
 
     public void areSame() {
         if (expectation != reality) {
             throw new AssertException(extendMessage(
-                "Expected " + (expectation == null ? "null" : printFunction.toString(expectation)) +
-                    " and " + (reality == null ? "null" : printFunction.toString(reality)) +
+                "Expected " + (expectation == null ? "null" : formatFunction.format(expectation)) +
+                    " and " + (reality == null ? "null" : formatFunction.format(reality)) +
                     " to be the same object.",
                 message
             ));
@@ -59,8 +58,8 @@ public @Component class BinaryObjectAssertion<T> {
     public void areNotSame() {
         if (expectation == reality) {
             throw new AssertException(extendMessage(
-                "Did not expect " + (expectation == null ? "null" : printFunction.toString(expectation)) +
-                    " and " + (reality == null ? "null" : printFunction.toString(reality)) +
+                "Did not expect " + (expectation == null ? "null" : formatFunction.format(expectation)) +
+                    " and " + (reality == null ? "null" : formatFunction.format(reality)) +
                     " to be the same object.",
                 message
             ));
@@ -71,28 +70,28 @@ public @Component class BinaryObjectAssertion<T> {
         @Optional T expectation,
         @Optional T reality,
         @Mandatory CompareFunction<T> compareFunction,
-        @Mandatory PrintFunction<T> printFunction,
+        @Mandatory FormatFunction<T> formatFunction,
         @Optional String message
     ) {
         if (expectation != reality) {
             if (expectation == null) {
                 throw new AssertException(extendMessage(
-                    "Expected null, but got " + printFunction.toString(reality) + ".",
+                    "Expected null, but got " + formatFunction.format(reality) + ".",
                     message
                 ));
             }
 
             if (reality == null) {
                 throw new AssertException(extendMessage(
-                    "Expected " + printFunction.toString(expectation) + ", but got null.",
+                    "Expected " + formatFunction.format(expectation) + ", but got null.",
                     message
                 ));
             }
 
             if (!compareFunction.equals(expectation, reality)) {
                 throw new AssertException(extendMessage(
-                    "Expected " + printFunction.toString(expectation) +
-                        ", but got " + printFunction.toString(reality) + ".",
+                    "Expected " + formatFunction.format(expectation) +
+                        ", but got " + formatFunction.format(reality) + ".",
                     message
                 ));
             }
@@ -103,7 +102,7 @@ public @Component class BinaryObjectAssertion<T> {
         @Optional T wrong,
         @Optional T reality,
         @Mandatory CompareFunction<T> compareFunction,
-        @Mandatory PrintFunction<T> printFunction,
+        @Mandatory FormatFunction<T> formatFunction,
         @Optional String message
     ) {
         if (reality == null && wrong == null) {
@@ -119,8 +118,8 @@ public @Component class BinaryObjectAssertion<T> {
 
         if (compareFunction.equals(wrong, reality)) {
             throw new AssertException(extendMessage(
-                "Did not expect " + printFunction.toString(wrong) +
-                    ", but got " + printFunction.toString(reality) + ".",
+                "Did not expect " + formatFunction.format(wrong) +
+                    ", but got " + formatFunction.format(reality) + ".",
                 message
             ));
         }

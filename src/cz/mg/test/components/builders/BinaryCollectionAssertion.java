@@ -3,19 +3,19 @@ package cz.mg.test.components.builders;
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.functions.FormatFunction;
+import cz.mg.functions.FormatFunctions;
 import cz.mg.test.exceptions.AssertException;
 import cz.mg.test.components.functions.CompareFunction;
-import cz.mg.test.components.functions.PrintFunction;
 import cz.mg.test.components.functions.common.DefaultCompareFunction;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 public @Component class BinaryCollectionAssertion<T> {
     private final @Optional Iterable<T> expectation;
     private final @Optional Iterable<T> reality;
     private @Mandatory CompareFunction<T> compareFunction = new DefaultCompareFunction<>();
-    private @Mandatory PrintFunction<T> printFunction = Objects::toString;
+    private @Mandatory FormatFunction<T> formatFunction = FormatFunctions.TO_STRING();
     private @Optional String message;
     private @Optional Boolean verbose;
     private @Optional String verboseBegin;
@@ -32,8 +32,8 @@ public @Component class BinaryCollectionAssertion<T> {
         return this;
     }
 
-    public BinaryCollectionAssertion<T> withPrintFunction(@Mandatory PrintFunction<T> printFunction) {
-        this.printFunction = printFunction;
+    public BinaryCollectionAssertion<T> withPrintFunction(@Mandatory FormatFunction<T> formatFunction) {
+        this.formatFunction = formatFunction;
         return this;
     }
 
@@ -63,7 +63,7 @@ public @Component class BinaryCollectionAssertion<T> {
     }
 
     public void areEqual() {
-        assertEquals(expectation, reality, compareFunction, printFunction, this::buildMessage);
+        assertEquals(expectation, reality, compareFunction, formatFunction, this::buildMessage);
     }
 
     private @Mandatory String buildMessage(@Mandatory String error) {
@@ -98,7 +98,7 @@ public @Component class BinaryCollectionAssertion<T> {
 
             if (element != null) {
                 builder.append(verboseBegin);
-                builder.append(printFunction.toString(element));
+                builder.append(formatFunction.format(element));
                 builder.append(verboseEnd);
             } else {
                 builder.append("null");
@@ -112,7 +112,7 @@ public @Component class BinaryCollectionAssertion<T> {
         @Optional Iterable<T> expectation,
         @Optional Iterable<T> reality,
         @Mandatory CompareFunction<T> compareFunction,
-        @Mandatory PrintFunction<T> printFunction,
+        @Mandatory FormatFunction<T> formatFunction,
         @Mandatory MessageBuilder messageBuilder
     ) {
         if (expectation == reality) {
@@ -148,22 +148,22 @@ public @Component class BinaryCollectionAssertion<T> {
             if (expectedItem == null) {
                 throw new AssertException(messageBuilder.build(
                     getCountMessage(countMismatch) +
-                    "Expected item at " + i + " to be null, but was " + printFunction.toString(actualItem) + "."
+                    "Expected item at " + i + " to be null, but was " + formatFunction.format(actualItem) + "."
                 ));
             }
 
             if (actualItem == null) {
                 throw new AssertException(messageBuilder.build(
                     getCountMessage(countMismatch) +
-                    "Expected item at " + i + " to be " + printFunction.toString(expectedItem) + ", but was null."
+                    "Expected item at " + i + " to be " + formatFunction.format(expectedItem) + ", but was null."
                 ));
             }
 
             if (!compareFunction.equals(expectedItem, actualItem)) {
                 throw new AssertException(messageBuilder.build(
                     getCountMessage(countMismatch) +
-                    "Expected item at " + i + " to be " + printFunction.toString(expectedItem) + ", " +
-                        "but was " + printFunction.toString(actualItem) + "."
+                    "Expected item at " + i + " to be " + formatFunction.format(expectedItem) + ", " +
+                        "but was " + formatFunction.format(actualItem) + "."
                 ));
             }
         }
