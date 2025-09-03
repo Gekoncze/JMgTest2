@@ -24,19 +24,19 @@ public @Static class Assert {
     }
 
     public static void assertSame(@Optional Object expectation, @Optional Object reality) {
-        BiAssertions.assertThat(expectation, reality).areSame();
+        Assertions.assertThat(reality).isSameAs(expectation);
     }
 
     public static void assertNotSame(@Optional Object expectation, @Optional Object reality) {
-        BiAssertions.assertThat(expectation, reality).areNotSame();
+        Assertions.assertThat(reality).isNotSameAs(expectation);
     }
 
     public static void assertEquals(@Optional Object expectation, @Optional Object reality) {
-        BiAssertions.assertThat(expectation, reality).areEqual();
+        Assertions.assertThat(reality).isEqualTo(expectation);
     }
 
     public static void assertNotEquals(@Optional Object expectation, @Optional Object reality) {
-        BiAssertions.assertThat(expectation, reality).areNotEqual();
+        Assertions.assertThat(reality).isNotEqualTo(expectation);
     }
 
     public static void assertException(@Mandatory UnsafeRunnable runnable, @Mandatory Class<? extends Exception> type) {
