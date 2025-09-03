@@ -63,7 +63,8 @@ public @Component class FluentObjectAssertion<T> extends FluentAssertion {
         }
     }
 
-    public void isInstanceOf(@Mandatory Class<? super T> expectedClass) {
+    @SuppressWarnings("rawtypes")
+    public void isInstanceOf(@Mandatory Class expectedClass) {
         if (reality == null) {
             throw createException(
                 "Expected an instance of type " + expectedClass.getSimpleName() + ", but got null."
@@ -79,7 +80,8 @@ public @Component class FluentObjectAssertion<T> extends FluentAssertion {
         }
     }
 
-    public void isNotInstanceOf(@Mandatory Class<? super T> expectedClass) {
+    @SuppressWarnings("rawtypes")
+    public void isNotInstanceOf(@Mandatory Class expectedClass) {
         if (reality == null) {
             return;
         }
