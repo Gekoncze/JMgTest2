@@ -2,7 +2,7 @@ package cz.mg.test.components.builders;
 
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.test.components.UnsafeRunnable;
+import cz.mg.test.components.functions.UnsafeRunnable;
 import cz.mg.test.exceptions.AssertException;
 
 public @Component class FluentCodeAssertion extends FluentAssertion {

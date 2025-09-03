@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.functions.EqualsFunction;
 import cz.mg.functions.FormatFunction;
 import cz.mg.functions.FormatFunctions;
-import cz.mg.test.components.functions.common.DefaultEqualsFunction;
+import cz.mg.test.components.functions.DefaultEqualsFunction;
 import cz.mg.test.exceptions.AssertException;
 
 import java.util.Iterator;

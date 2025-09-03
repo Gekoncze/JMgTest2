@@ -1,4 +1,4 @@
-package cz.mg.test.components.functions.common;
+package cz.mg.test.components.functions;
 
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
@@ -28,24 +28,14 @@ public @Component class NumberEqualsFunction implements EqualsFunction<Number> {
     }
 
     private static long convert(@Mandatory Number number) {
-        if (number instanceof Long) {
-            return (long) number;
-        }
-
-        if (number instanceof Integer) {
-            return (int) number;
-        }
-
-        if (number instanceof Short) {
-            return (short) number;
-        }
-
-        if (number instanceof Byte) {
-            return (byte) number;
-        }
-
-        throw new UnsupportedOperationException(
-            "Unsupported number type " + number.getClass().getSimpleName() + "."
-        );
+        return switch (number) {
+            case Long l -> l;
+            case Integer i -> i;
+            case Short s -> s;
+            case Byte b -> b;
+            default -> throw new UnsupportedOperationException(
+                "Unsupported number of type " + number.getClass().getSimpleName() + "."
+            );
+        };
     }
 }
