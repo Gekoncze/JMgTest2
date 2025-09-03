@@ -3,18 +3,18 @@ package cz.mg.test.components.builders;
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.functions.EqualsFunction;
 import cz.mg.functions.FormatFunction;
 import cz.mg.functions.FormatFunctions;
+import cz.mg.test.components.functions.common.DefaultEqualsFunction;
 import cz.mg.test.exceptions.AssertException;
-import cz.mg.test.components.functions.CompareFunction;
-import cz.mg.test.components.functions.common.DefaultCompareFunction;
 
 import java.util.Iterator;
 
 public @Component class BinaryCollectionAssertion<T> {
     private final @Optional Iterable<T> expectation;
     private final @Optional Iterable<T> reality;
-    private @Mandatory CompareFunction<T> compareFunction = new DefaultCompareFunction<>();
+    private @Mandatory EqualsFunction<T> equalsFunction = new DefaultEqualsFunction<>();
     private @Mandatory FormatFunction<T> formatFunction = FormatFunctions.TO_STRING();
     private @Optional String message;
     private @Optional Boolean verbose;
@@ -27,8 +27,8 @@ public @Component class BinaryCollectionAssertion<T> {
         this.reality = reality;
     }
 
-    public BinaryCollectionAssertion<T> withCompareFunction(@Mandatory CompareFunction<T> compareFunction) {
-        this.compareFunction = compareFunction;
+    public BinaryCollectionAssertion<T> withCompareFunction(@Mandatory EqualsFunction<T> equalsFunction) {
+        this.equalsFunction = equalsFunction;
         return this;
     }
 
@@ -63,7 +63,7 @@ public @Component class BinaryCollectionAssertion<T> {
     }
 
     public void areEqual() {
-        assertEquals(expectation, reality, compareFunction, formatFunction, this::buildMessage);
+        assertEquals(expectation, reality, equalsFunction, formatFunction, this::buildMessage);
     }
 
     private @Mandatory String buildMessage(@Mandatory String error) {
@@ -111,7 +111,7 @@ public @Component class BinaryCollectionAssertion<T> {
     private static <T> void assertEquals(
         @Optional Iterable<T> expectation,
         @Optional Iterable<T> reality,
-        @Mandatory CompareFunction<T> compareFunction,
+        @Mandatory EqualsFunction<T> equalsFunction,
         @Mandatory FormatFunction<T> formatFunction,
         @Mandatory MessageBuilder messageBuilder
     ) {
@@ -159,7 +159,7 @@ public @Component class BinaryCollectionAssertion<T> {
                 ));
             }
 
-            if (!compareFunction.equals(expectedItem, actualItem)) {
+            if (!equalsFunction.equals(expectedItem, actualItem)) {
                 throw new AssertException(messageBuilder.build(
                     getCountMessage(countMismatch) +
                     "Expected item at " + i + " to be " + formatFunction.format(expectedItem) + ", " +

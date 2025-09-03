@@ -3,16 +3,16 @@ package cz.mg.test.components.builders;
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
+import cz.mg.functions.EqualsFunction;
 import cz.mg.functions.FormatFunction;
 import cz.mg.functions.FormatFunctions;
+import cz.mg.test.components.functions.common.DefaultEqualsFunction;
 import cz.mg.test.exceptions.AssertException;
-import cz.mg.test.components.functions.CompareFunction;
-import cz.mg.test.components.functions.common.DefaultCompareFunction;
 
 public @Component class BinaryObjectAssertion<T> {
     private final @Optional T expectation;
     private final @Optional T reality;
-    private @Mandatory CompareFunction<T> compareFunction = new DefaultCompareFunction<>();
+    private @Mandatory EqualsFunction<T> equalsFunction = new DefaultEqualsFunction<>();
     private @Mandatory FormatFunction<T> formatFunction = FormatFunctions.TO_STRING();
     private @Optional String message;
 
@@ -21,8 +21,8 @@ public @Component class BinaryObjectAssertion<T> {
         this.reality = reality;
     }
 
-    public BinaryObjectAssertion<T> withCompareFunction(@Mandatory CompareFunction<T> compareFunction) {
-        this.compareFunction = compareFunction;
+    public BinaryObjectAssertion<T> withCompareFunction(@Mandatory EqualsFunction<T> equalsFunction) {
+        this.equalsFunction = equalsFunction;
         return this;
     }
 
@@ -37,11 +37,11 @@ public @Component class BinaryObjectAssertion<T> {
     }
 
     public void areEqual() {
-        assertEquals(expectation, reality, compareFunction, formatFunction, message);
+        assertEquals(expectation, reality, equalsFunction, formatFunction, message);
     }
 
     public void areNotEqual() {
-        assertNotEquals(expectation, reality, compareFunction, formatFunction, message);
+        assertNotEquals(expectation, reality, equalsFunction, formatFunction, message);
     }
 
     public void areSame() {
@@ -69,7 +69,7 @@ public @Component class BinaryObjectAssertion<T> {
     private static <T> void assertEquals(
         @Optional T expectation,
         @Optional T reality,
-        @Mandatory CompareFunction<T> compareFunction,
+        @Mandatory EqualsFunction<T> equalsFunction,
         @Mandatory FormatFunction<T> formatFunction,
         @Optional String message
     ) {
@@ -88,7 +88,7 @@ public @Component class BinaryObjectAssertion<T> {
                 ));
             }
 
-            if (!compareFunction.equals(expectation, reality)) {
+            if (!equalsFunction.equals(expectation, reality)) {
                 throw new AssertException(extendMessage(
                     "Expected " + formatFunction.format(expectation) +
                         ", but got " + formatFunction.format(reality) + ".",
@@ -101,7 +101,7 @@ public @Component class BinaryObjectAssertion<T> {
     private static <T> void assertNotEquals(
         @Optional T wrong,
         @Optional T reality,
-        @Mandatory CompareFunction<T> compareFunction,
+        @Mandatory EqualsFunction<T> equalsFunction,
         @Mandatory FormatFunction<T> formatFunction,
         @Optional String message
     ) {
@@ -116,7 +116,7 @@ public @Component class BinaryObjectAssertion<T> {
             return;
         }
 
-        if (compareFunction.equals(wrong, reality)) {
+        if (equalsFunction.equals(wrong, reality)) {
             throw new AssertException(extendMessage(
                 "Did not expect " + formatFunction.format(wrong) +
                     ", but got " + formatFunction.format(reality) + ".",

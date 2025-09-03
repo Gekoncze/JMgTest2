@@ -2,12 +2,12 @@ package cz.mg.test.components.functions.common;
 
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.test.components.functions.CompareFunction;
+import cz.mg.functions.EqualsFunction;
 
 import java.util.Objects;
 
-public @Component class DefaultCompareFunction<T> implements CompareFunction<T> {
-    private final NumberCompareFunction numberCompareFunction = new NumberCompareFunction();
+public @Component class DefaultEqualsFunction<T> implements EqualsFunction<T> {
+    private final NumberEqualsFunction numberCompareFunction = new NumberEqualsFunction();
 
     @Override
     public boolean equals(@Mandatory Object a, @Mandatory Object b) {
