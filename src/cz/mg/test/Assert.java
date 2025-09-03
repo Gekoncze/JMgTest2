@@ -3,19 +3,13 @@ package cz.mg.test;
 import cz.mg.annotations.classes.Static;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
-import cz.mg.test.components.UnsafeRunnable;
 import cz.mg.test.components.builders.BinaryCollectionAssertion;
 import cz.mg.test.components.builders.BinaryObjectAssertion;
-import cz.mg.test.components.builders.FluentCodeAssertion;
 import cz.mg.test.exceptions.AssertException;
 
 public @Static class Assert {
     public static @Mandatory <T> BinaryObjectAssertion<T> assertThat(@Optional T expectation, @Optional T reality) {
         return new BinaryObjectAssertion<>(expectation, reality);
-    }
-
-    public static @Mandatory FluentCodeAssertion assertThatCode(@Mandatory UnsafeRunnable runnable) {
-        return new FluentCodeAssertion(runnable);
     }
 
     public static @Mandatory <T> BinaryCollectionAssertion<T> assertThatCollections(
