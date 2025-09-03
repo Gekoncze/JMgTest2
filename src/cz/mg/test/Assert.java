@@ -6,7 +6,7 @@ import cz.mg.annotations.requirement.Optional;
 import cz.mg.test.components.UnsafeRunnable;
 import cz.mg.test.components.builders.BinaryCollectionAssertion;
 import cz.mg.test.components.builders.BinaryObjectAssertion;
-import cz.mg.test.components.builders.CodeAssertion;
+import cz.mg.test.components.builders.FluentCodeAssertion;
 import cz.mg.test.exceptions.AssertException;
 
 public @Static class Assert {
@@ -14,8 +14,8 @@ public @Static class Assert {
         return new BinaryObjectAssertion<>(expectation, reality);
     }
 
-    public static @Mandatory CodeAssertion assertThatCode(@Mandatory UnsafeRunnable runnable) {
-        return new CodeAssertion(runnable);
+    public static @Mandatory FluentCodeAssertion assertThatCode(@Mandatory UnsafeRunnable runnable) {
+        return new FluentCodeAssertion(runnable);
     }
 
     public static @Mandatory <T> BinaryCollectionAssertion<T> assertThatCollections(
