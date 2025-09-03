@@ -7,6 +7,9 @@ import cz.mg.test.components.UnsafeRunnable;
 import cz.mg.test.components.builders.FluentCodeAssertion;
 import cz.mg.test.components.builders.FluentObjectAssertion;
 
+/**
+ * Fluent assertions.
+ */
 public @Static class Assertions {
     public static @Mandatory <T> FluentObjectAssertion<T> assertThat(@Optional T object) {
         return new FluentObjectAssertion<>(object);
