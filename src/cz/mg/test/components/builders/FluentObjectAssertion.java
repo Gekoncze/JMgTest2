@@ -45,6 +45,24 @@ public @Component class FluentObjectAssertion<T> extends FluentAssertion {
         }
     }
 
+    public void isSameAs(@Optional T expectation) {
+        if (expectation != reality) {
+            throw createException(
+                "Expected " + formatFunction.formatOptional(expectation) +
+                    " to be the same as " + formatFunction.formatOptional(reality) + "."
+            );
+        }
+    }
+
+    public void isNotSameAs(@Optional T expectation) {
+        if (expectation == reality) {
+            throw createException(
+                "Did not expect " + formatFunction.formatOptional(expectation) +
+                    " to be the same as " + formatFunction.formatOptional(reality) + "."
+            );
+        }
+    }
+
     public void isEqualTo(@Optional T expectation) {
         if (!equalsFunction.equalsOptional(expectation, reality)) {
             throw createException(
