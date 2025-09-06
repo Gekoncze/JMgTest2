@@ -93,6 +93,43 @@ public @Component class FluentCollectionAssertion<T> {
         }
     }
 
+    public void isNotEqualTo(@Optional Iterable<T> expectation) {
+        Iterable<T> reality = this.reality;
+
+        if (expectation == reality) {
+            throw createException(expectation, "Expected collections to not be equal.");
+        }
+
+        if (expectation == null) {
+            return;
+        }
+
+        if (reality == null) {
+            return;
+        }
+
+        int expectedCount = count(expectation);
+        int actualCount = count(reality);
+        if (expectedCount != actualCount) {
+            return;
+        }
+
+        int i = -1;
+        Iterator<T> expectationIterator = expectation.iterator();
+        Iterator<T> realityIterator = reality.iterator();
+        while (expectationIterator.hasNext() && realityIterator.hasNext()) {
+            i++;
+            @Optional T expectedObject = expectationIterator.next();
+            @Optional T actualObject = realityIterator.next();
+
+            if (!equalsFunction.equalsOptional(expectedObject, actualObject)) {
+                return;
+            }
+        }
+
+        throw createException(expectation, "Expected collections to not be equal.");
+    }
+
     private int count(@Mandatory Iterable<T> iterable) {
         int count = 0;
         for (T ignored : iterable) {
