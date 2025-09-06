@@ -1,4 +1,4 @@
-package cz.mg.test.components.functions;
+package cz.mg.test.functions;
 
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;

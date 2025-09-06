@@ -1,4 +1,4 @@
-package cz.mg.test.components.builders;
+package cz.mg.test.builders;
 
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
@@ -7,9 +7,11 @@ import cz.mg.functions.EqualsFunction;
 import cz.mg.functions.EqualsFunctions;
 import cz.mg.functions.FormatFunction;
 import cz.mg.functions.FormatFunctions;
+import cz.mg.test.exceptions.AssertException;
 
-public @Component class FluentObjectAssertion<T> extends FluentAssertion {
+public @Component class FluentObjectAssertion<T> {
     private final @Optional T reality;
+    private @Optional String message;
     private @Mandatory EqualsFunction<T> equalsFunction = EqualsFunctions.EQUALS();
     private @Mandatory FormatFunction<T> formatFunction = FormatFunctions.TO_STRING();
 
@@ -17,9 +19,8 @@ public @Component class FluentObjectAssertion<T> extends FluentAssertion {
         this.reality = reality;
     }
 
-    @Override
     public @Mandatory FluentObjectAssertion<T> withMessage(@Mandatory String message) {
-        super.withMessage(message);
+        this.message = message;
         return this;
     }
 
@@ -90,7 +91,7 @@ public @Component class FluentObjectAssertion<T> extends FluentAssertion {
         }
 
         if (!expectedClass.isInstance(reality)) {
-            String[] names = getNames(expectedClass, reality.getClass());
+            String[] names = Names.get(expectedClass, reality.getClass());
             throw createException(
                 "Expected an instance of " + names[0] + ", "
                     + "but got instance of " + names[1] + "."
@@ -116,5 +117,12 @@ public @Component class FluentObjectAssertion<T> extends FluentAssertion {
                     + "but got instance of " + actualClassName + "."
             );
         }
+    }
+
+    private @Mandatory AssertException createException(@Mandatory String specificMessage) {
+        return new ExceptionBuilder()
+            .addMessage(message)
+            .addMessage(specificMessage)
+            .build();
     }
 }

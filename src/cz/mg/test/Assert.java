@@ -3,9 +3,9 @@ package cz.mg.test;
 import cz.mg.annotations.classes.Static;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
-import cz.mg.test.components.builders.FluentCodeAssertion;
-import cz.mg.test.components.functions.UnsafeRunnable;
+import cz.mg.test.builders.FluentCodeAssertion;
 import cz.mg.test.exceptions.AssertException;
+import cz.mg.test.functions.UnsafeRunnable;
 
 /**
  * Quick assertions using a single method call.

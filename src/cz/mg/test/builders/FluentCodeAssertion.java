@@ -1,20 +1,21 @@
-package cz.mg.test.components.builders;
+package cz.mg.test.builders;
 
 import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.test.components.functions.UnsafeRunnable;
+import cz.mg.annotations.requirement.Optional;
 import cz.mg.test.exceptions.AssertException;
+import cz.mg.test.functions.UnsafeRunnable;
 
-public @Component class FluentCodeAssertion extends FluentAssertion {
+public @Component class FluentCodeAssertion {
     private final @Mandatory UnsafeRunnable runnable;
+    private @Optional String message;
 
     public FluentCodeAssertion(@Mandatory UnsafeRunnable runnable) {
         this.runnable = runnable;
     }
 
-    @Override
     public @Mandatory FluentCodeAssertion withMessage(@Mandatory String message) {
-        super.withMessage(message);
+        this.message = message;
         return this;
     }
 
@@ -43,7 +44,7 @@ public @Component class FluentCodeAssertion extends FluentAssertion {
             if (type.isAssignableFrom(e.getClass())) {
                 return (E) e;
             } else {
-                String[] names = getNames(type, e.getClass());
+                String[] names = Names.get(type, e.getClass());
                 throw createException(
                     "Expected an exception of type " + names[0] + " to be thrown, "
                         + "but got " + names[1] + ".", e
@@ -53,7 +54,15 @@ public @Component class FluentCodeAssertion extends FluentAssertion {
 
         throw createException(
             "Expected an exception of type " + type.getSimpleName() + " to be thrown, "
-                + "but no exception was thrown."
+                + "but no exception was thrown.", null
         );
+    }
+
+    private @Mandatory AssertException createException(@Mandatory String specificMessage, @Optional Exception cause) {
+        return new ExceptionBuilder()
+            .addMessage(message)
+            .addMessage(specificMessage)
+            .withCause(cause)
+            .build();
     }
 }
