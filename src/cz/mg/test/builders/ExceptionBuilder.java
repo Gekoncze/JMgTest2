@@ -18,11 +18,7 @@ import cz.mg.test.exceptions.AssertException;
     }
 
     public @Mandatory ExceptionBuilder addMessages(@Optional String... messages) {
-        if (messages != null) {
-            for (String message : messages) {
-                addMessage(message);
-            }
-        }
+        messageBuilder.addMessages(messages);
         return this;
     }
 

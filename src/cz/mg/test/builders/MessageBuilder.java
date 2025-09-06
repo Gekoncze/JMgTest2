@@ -18,6 +18,15 @@ import cz.mg.annotations.requirement.Optional;
         return this;
     }
 
+    public @Mandatory MessageBuilder addMessages(@Optional String... messages) {
+        if (messages != null) {
+            for (String message : messages) {
+                addMessage(message);
+            }
+        }
+        return this;
+    }
+
     public @Mandatory String build() {
         return builder.toString();
     }
