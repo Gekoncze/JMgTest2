@@ -4,15 +4,15 @@ import cz.mg.annotations.classes.Component;
 import cz.mg.annotations.requirement.Mandatory;
 import cz.mg.annotations.requirement.Optional;
 import cz.mg.functions.EqualsFunction;
-import cz.mg.functions.EqualsFunctions;
 import cz.mg.functions.FormatFunction;
 import cz.mg.functions.FormatFunctions;
 import cz.mg.test.exceptions.AssertException;
+import cz.mg.test.functions.DefaultFunctions;
 
 public @Component class FluentObjectAssertion<T> {
     private final @Optional T reality;
     private @Optional String message;
-    private @Mandatory EqualsFunction<T> equalsFunction = EqualsFunctions.EQUALS();
+    private @Mandatory EqualsFunction<T> equalsFunction = DefaultFunctions.EQUALS();
     private @Mandatory FormatFunction<T> formatFunction = FormatFunctions.TO_STRING();
 
     public FluentObjectAssertion(@Optional T reality) {

@@ -1,14 +1,12 @@
 package cz.mg.test.functions;
 
-import cz.mg.annotations.classes.Component;
+import cz.mg.annotations.classes.Static;
 import cz.mg.annotations.requirement.Mandatory;
-import cz.mg.functions.EqualsFunction;
 
 import java.util.Objects;
 
-public @Component class NumberEqualsFunction implements EqualsFunction<Number> {
-    @Override
-    public boolean equals(@Mandatory Number a, @Mandatory Number b) {
+@Static class Numbers {
+    public static boolean equals(@Mandatory Number a, @Mandatory Number b) {
         if (areIntegers(a, b)) {
             return convert(a) == convert(b);
         } else {
